@@ -74,17 +74,25 @@ function initMap() {
          : "#e74c3c";
   }
 
-  data.forEach(p => {
-    L.circleMarker([p.lat, p.lon], {
-      radius: 5,
-      color: "black",
-      weight: 1,
-      fillColor: getColor(p.pm25),
-      fillOpacity: 0.9
-    })
-    .addTo(map)
-    .bindPopup(`PM2.5: ${p.pm25}`);
-  });
+ 
+data.forEach(p => {
+
+  // ---- DOT LAYER (actual sensor reading)
+  L.circleMarker([p.lat, p.lon], {
+    radius: 5,
+    color: "black",
+    weight: 1,
+    fillColor:
+      p.pm25 < 20 ? "#2ecc71" :
+      p.pm25 < 50 ? "#f1c40f" :
+      "#e74c3c",
+    fillOpacity: 0.9
+  }).addTo(map);
+
+  // ---- HEAT LAYER (gradient glow)
+  addHeat(p);
+
+});
   map.setMaxBounds([
   [38.45, -90.85],
   [38.85, -90.25]
