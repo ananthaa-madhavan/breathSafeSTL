@@ -10,9 +10,7 @@ let heatLayer = null;
 // ===============================
 // PARTICLES
 // ===============================
-
 function spawnParticles() {
-  // ❌ don't spawn particles on map page (prevents visual overlap issues)
   if (document.getElementById("map")) return;
 
   const colors = ["green", "yellow", "orange", "red"];
@@ -66,11 +64,9 @@ function addHeat(p, value) {
 }
 
 // ===============================
-// RENDER DATA
+// DATA RENDER
 // ===============================
 function renderData() {
-  if (!dotLayer || !heatLayer) return;
-
   const data = [
     { lat: 38.65, lon: -90.55, pm1: 10, pm25: 30, pm10: 60 },
     { lat: 38.63, lon: -90.52, pm1: 15, pm25: 55, pm10: 90 },
@@ -120,7 +116,7 @@ function initMap() {
 }
 
 // ===============================
-// PM TOGGLE (FIXED + STABLE)
+// PM TOGGLE (FIXED + SAFE)
 // ===============================
 function setPM(type) {
   currentPM = type;
@@ -128,19 +124,15 @@ function setPM(type) {
   document.querySelectorAll(".pm-toggle button").forEach(btn => {
     btn.classList.remove("active");
 
-    if (
-      (type === "pm25" && btn.textContent.includes("PM2.5")) ||
-      (type === "pm1" && btn.textContent.includes("PM1")) ||
-      (type === "pm10" && btn.textContent.includes("PM10"))
-    ) {
+    if (btn.getAttribute("data-pm") === type) {
       btn.classList.add("active");
     }
   });
 
   if (dotLayer) dotLayer.clearLayers();
 
-  if (heatLayer) {
-    heatLayer.clearLayers();
+  if (heatLayer && window.mapInstance) {
+    window.mapInstance.removeLayer(heatLayer);
     heatLayer = L.layerGroup().addTo(window.mapInstance);
   }
 
