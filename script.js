@@ -45,10 +45,7 @@ function getValue(p) {
 function buildHeatData(data) {
   return data.map(p => {
     const value = getValue(p);
-
-    // normalize to 0–1 range
     const intensity = Math.min(value / 120, 1);
-
     return [p.lat, p.lon, intensity];
   });
 }
@@ -86,7 +83,7 @@ function initMap() {
 }
 
 // ===============================
-// RENDER DATA
+// RENDER DATA (UPDATED WITH POPUPS)
 // ===============================
 function renderData() {
   if (!mapInstance) return;
@@ -97,18 +94,15 @@ function renderData() {
     { lat: 38.60, lon: -90.50, pm1: 25, pm25: 80, pm10: 120 }
   ];
 
-  // clear dots
   dotLayer.clearLayers();
 
-  // update heatmap
   const heatData = buildHeatData(data);
   heatLayer.setLatLngs(heatData);
 
-  // add dots
   data.forEach(p => {
     const value = getValue(p);
 
-    L.circleMarker([p.lat, p.lon], {
+    const marker = L.circleMarker([p.lat, p.lon], {
       radius: 6,
       color: "black",
       weight: 1,
@@ -117,7 +111,21 @@ function renderData() {
         value < 50 ? "#f1c40f" :
         "#e74c3c",
       fillOpacity: 0.9
-    }).addTo(dotLayer);
+    });
+
+    // ✅ POPUP ADDED HERE
+    marker.bindPopup(`
+      <div style="font-family:Segoe UI; font-size:13px;">
+        <b>Sensor Reading</b><br><br>
+        <b>PM1:</b> ${p.pm1}<br>
+        <b>PM2.5:</b> ${p.pm25}<br>
+        <b>PM10:</b> ${p.pm10}<br><br>
+        <b>Location:</b><br>
+        ${p.lat.toFixed(4)}, ${p.lon.toFixed(4)}
+      </div>
+    `);
+
+    marker.addTo(dotLayer);
   });
 }
 
