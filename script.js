@@ -2,7 +2,6 @@ let currentPM = "pm25";
 
 let mapInstance = null;
 let dotLayer = null;
-let heatLayer = null;
 
 // ===============================
 // PARTICLES
@@ -40,7 +39,7 @@ function getValue(p) {
 }
 
 // ===============================
-// MAP INIT
+// MAP INIT (SAFE)
 // ===============================
 function initMap() {
   const mapDiv = document.getElementById("map");
@@ -59,7 +58,6 @@ function initMap() {
   }).addTo(mapInstance);
 
   dotLayer = L.layerGroup().addTo(mapInstance);
-  heatLayer = L.layerGroup().addTo(mapInstance);
 
   const bounds = L.latLngBounds(
     [38.45, -90.85],
@@ -72,15 +70,14 @@ function initMap() {
     mapInstance.panInsideBounds(bounds, { animate: false });
   });
 
-  // ✅ FIX 1: attach AFTER map exists
   mapInstance.on("moveend", updateWeatherTiles);
 }
 
 // ===============================
-// RENDER DATA
+// RENDER DATA (SAFE)
 // ===============================
 function renderData() {
-  if (!mapInstance) return;
+  if (!mapInstance || !dotLayer) return;
 
   const data = [
     { lat: 38.65, lon: -90.55, pm1: 10, pm25: 30, pm10: 60 },
@@ -89,7 +86,6 @@ function renderData() {
   ];
 
   dotLayer.clearLayers();
-  heatLayer.clearLayers();
 
   data.forEach(p => {
     const v = getValue(p);
@@ -108,7 +104,7 @@ function renderData() {
 }
 
 // ===============================
-// PM TOGGLE
+// PM TOGGLE (SAFE)
 // ===============================
 function setPM(type) {
   currentPM = type;
@@ -121,19 +117,20 @@ function setPM(type) {
 }
 
 // ===============================
-// WEATHER API
+// WEATHER (SAFE)
 // ===============================
 async function fetchWeather(lat, lon) {
-  const url =
-    `https://api.open-meteo.com/v1/forecast` +
-    `?latitude=${lat}&longitude=${lon}` +
-    `&current=temperature_2m,uv_index,weather_code` +
-    `&timezone=auto`;
+  try {
+    const res = await fetch(
+      `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,uv_index,weather_code&timezone=auto`
+    );
 
-  const res = await fetch(url);
-  const data = await res.json();
-
-  return data.current;
+    const data = await res.json();
+    return data.current;
+  } catch (e) {
+    console.log("Weather fetch failed", e);
+    return null;
+  }
 }
 
 function weatherCodeToText(code) {
@@ -153,30 +150,23 @@ function weatherCodeToText(code) {
   return map[code] || "Unknown";
 }
 
-function getMapCenter() {
-  if (!mapInstance) return null;
-  const c = mapInstance.getCenter();
-  return { lat: c.lat, lon: c.lng };
-}
-
 // ===============================
-// UPDATE TILES
+// TILE UPDATE (SAFE)
 // ===============================
 async function updateWeatherTiles() {
-  const center = getMapCenter();
+  const center = mapInstance?.getCenter();
   if (!center) return;
 
-  const weather = await fetchWeather(center.lat, center.lon);
+  const weather = await fetchWeather(center.lat, center.lng);
+  if (!weather) return;
 
-  document.getElementById("tempTile").innerText =
-    Math.round(weather.temperature_2m) + "°F";
+  const temp = document.getElementById("tempTile");
+  const uv = document.getElementById("uvTile");
+  const wx = document.getElementById("weatherTile");
 
-  document.getElementById("uvTile").innerText =
-    weather.uv_index;
-
-  // ✅ FIX 2: convert code → text
-  document.getElementById("weatherTile").innerText =
-    weatherCodeToText(weather.weather_code);
+  if (temp) temp.innerText = Math.round(weather.temperature_2m) + "°F";
+  if (uv) uv.innerText = weather.uv_index;
+  if (wx) wx.innerText = weatherCodeToText(weather.weather_code);
 }
 
 // ===============================
@@ -188,8 +178,6 @@ window.onload = function () {
   if (document.getElementById("map")) {
     initMap();
     renderData();
-
-    // ✅ FIX 3: initial load so tiles aren't empty
     updateWeatherTiles();
   }
 };
