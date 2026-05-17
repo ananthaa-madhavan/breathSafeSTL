@@ -25,15 +25,13 @@
   </div>
 
   <!-- PM TOGGLE (RIGHT SIDE) -->
-  <div class="pm-toggle">
+ <div class="pm-toggle">
+  <div class="pm-title">PM Layers</div>
 
-    <div class="pm-title">PM Layers</div>
-
-    <button onclick="setPM('pm1')">PM1</button>
-    <button onclick="setPM('pm25')" class="active">PM2.5</button>
-    <button onclick="setPM('pm10')">PM10</button>
-
-  </div>
+  <button data-pm="pm1" onclick="setPM('pm1')">PM1</button>
+  <button data-pm="pm25" onclick="setPM('pm25')" class="active">PM2.5</button>
+  <button data-pm="pm10" onclick="setPM('pm10')">PM10</button>
+</div>
 
   <!-- 🌡 DATA TILES (LEFT SIDE DASHBOARD) -->
   <div id="data-panel">
