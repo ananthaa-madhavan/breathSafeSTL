@@ -18,7 +18,7 @@ body {
 }
 
 /* =======================
-   GRID (BOTTOM LAYER)
+   GRID BACKGROUND
 ======================= */
 
 body::before {
@@ -37,7 +37,7 @@ body::before {
 }
 
 /* =======================
-   PARTICLES (MIDDLE LAYER)
+   PARTICLES
 ======================= */
 
 .particle {
@@ -50,7 +50,7 @@ body::before {
 
   pointer-events: none;
 
-  z-index: 2;
+  z-index: 0;
 }
 
 .green { background: #2ecc71; }
@@ -63,41 +63,13 @@ body::before {
 ======================= */
 
 #map {
-  height: 100vh;
-  width: 100vw;
-
   position: fixed;
-  top: 0;
-  left: 0;
+  inset: 0;
+
+  width: 100vw;
+  height: 100vh;
 
   z-index: 1;
-}
-
-/* Leaflet internal layers must stay under UI */
-.leaflet-pane {
-  z-index: 1 !important;
-}
-
-.leaflet-top,
-.leaflet-bottom {
-  z-index: 2 !important;
-}
-
-/* =======================
-   PARTICLES (ABOVE MAP, BELOW UI)
-======================= */
-
-.particle {
-  position: fixed;
-
-  border-radius: 50%;
-  opacity: 0.65;
-
-  box-shadow: 0 0 10px rgba(0,0,0,0.2);
-
-  pointer-events: none;
-
-  z-index: 0; /* 👈 KEY CHANGE */
 }
 
 /* =======================
@@ -110,6 +82,7 @@ body::before {
 
   max-width: 900px;
   margin: 80px auto;
+
   text-align: center;
 }
 
@@ -161,6 +134,7 @@ p {
   color: white;
 
   padding: 16px 24px;
+
   font-size: 22px;
   font-weight: 600;
 
@@ -199,7 +173,7 @@ p {
 }
 
 /* =======================
-   PM PANEL
+   PM TOGGLE PANEL
 ======================= */
 
 .pm-toggle {
@@ -210,6 +184,7 @@ p {
   z-index: 3000;
 
   background: #0b2a4a;
+
   padding: 12px;
   border-radius: 12px;
 
@@ -237,11 +212,18 @@ p {
   border-radius: 6px;
 
   cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.pm-toggle button:hover {
+  background: rgba(255,255,255,0.22);
 }
 
 .pm-toggle button.active {
   background: white;
   color: #0b2a4a;
+  font-weight: 700;
 }
 
 /* =======================
@@ -289,20 +271,9 @@ p {
 }
 
 /* =======================
-   HEAT DOTS
+   HEAT AURAS
 ======================= */
 
-.heat-dot {
-  position: absolute;
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-
-  filter: blur(18px);
-  opacity: 0.35;
+.soft-aura {
+  filter: blur(35px);
 }
-
-.heat-green { background: #2ecc71; }
-.heat-yellow { background: #f1c40f; }
-.heat-orange { background: #e67e22; }
-.heat-red { background: #e74c3c; }
