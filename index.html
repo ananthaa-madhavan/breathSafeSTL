@@ -5,11 +5,33 @@
 
   <link rel="stylesheet" href="style.css">
 
-  <!-- Leaflet (KEEP for now) -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <!-- Leaflet -->
+  <link 
+    rel="stylesheet" 
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  >
+
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-  <!-- ❌ REMOVE heat plugin (we are not using it anymore) -->
+  <!-- FIREBASE -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+  <!-- FIREBASE CONFIG -->
+  <script>
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_AUTH_DOMAIN",
+      databaseURL: "YOUR_DATABASE_URL",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_STORAGE_BUCKET",
+      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+  </script>
+
 </head>
 
 <body>
@@ -18,24 +40,26 @@
   <div class="top-banner">BreathSafeSTL</div>
 
   <!-- NAVBAR -->
- <div class="navbar">
+  <div class="navbar">
     <a href="index.html">Home</a>
-   <a href="analytics.html">Analytics</a>
+    <a href="analytics.html">Analytics</a>
     <a href="about.html">About</a>
     <a href="design.html">Info</a>
     <a href="contact.html">Contact</a>
   </div>
 
-  <!-- PM TOGGLE (RIGHT SIDE) -->
- <div class="pm-toggle">
-  <div class="pm-title">PM Layers</div>
+  <!-- PM TOGGLE -->
+  <div class="pm-toggle">
+    <div class="pm-title">PM Layers</div>
 
-  <button data-pm="pm1" onclick="setPM('pm1')">PM1</button>
-  <button data-pm="pm25" onclick="setPM('pm25')" class="active">PM2.5</button>
-  <button data-pm="pm10" onclick="setPM('pm10')">PM10</button>
-</div>
+    <button data-pm="pm1" onclick="setPM('pm1')">PM1</button>
+    <button data-pm="pm25" onclick="setPM('pm25')" class="active">
+      PM2.5
+    </button>
+    <button data-pm="pm10" onclick="setPM('pm10')">PM10</button>
+  </div>
 
-  <!-- 🌡 DATA TILES (LEFT SIDE DASHBOARD) -->
+  <!-- DATA PANEL -->
   <div id="data-panel">
 
     <div class="tile">
@@ -63,7 +87,7 @@
   <!-- MAP -->
   <div id="map"></div>
 
-  <!-- SCRIPT LAST -->
+  <!-- YOUR SCRIPT -->
   <script src="script.js"></script>
 
 </body>
