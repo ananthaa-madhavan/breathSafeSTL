@@ -155,13 +155,13 @@ function renderData(data) {
 
     const auraRadius = maxDist * 1.1;
 
-    L.circle([p.lat, p.lon], {
-      radius: auraRadius,
-      stroke: false,
-      fillColor: color,
-      fillOpacity: 0.002,
-      className: "soft-aura"
-    }).addTo(heatLayer);
+   L.circleMarker([p.lat, p.lon], {
+  radius: 30,
+  stroke: false,
+  fillColor: color,
+  fillOpacity: 0.03,
+  className: "soft-aura"
+}).addTo(heatLayer);
 
     const time = new Date(p.timestamp).toLocaleString();
 
