@@ -159,7 +159,7 @@ function renderData(data) {
       radius: auraRadius,
       stroke: false,
       fillColor: color,
-      fillOpacity: 0.02,
+      fillOpacity: 0.002,
       className: "soft-aura"
     }).addTo(heatLayer);
 
