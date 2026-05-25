@@ -180,21 +180,21 @@ async function fetchWeather(lat, lon) {
   }
 }
 
-function weatherCodeToText(code) {
+function weatherCodeToEmoji(code) {
   const map = {
-    0: "Clear",
-    1: "Mostly Clear",
-    2: "Partly Cloudy",
-    3: "Cloudy",
-    45: "Fog",
-    51: "Drizzle",
-    61: "Rain",
-    71: "Snow",
-    80: "Showers",
-    95: "Storm"
+    0: "☀️",        // Clear
+    1: "🌤️",        // Mostly Clear
+    2: "⛅",        // Partly Cloudy
+    3: "☁️",        // Cloudy
+    45: "🌫️",       // Fog
+    51: "🌦️",       // Drizzle
+    61: "🌧️",       // Rain
+    71: "❄️",       // Snow
+    80: "🌧️",       // Showers
+    95: "⛈️"        // Storm
   };
 
-  return map[code] || "Unknown";
+  return map[code] || "❓";
 }
 
 // ===============================
@@ -213,7 +213,7 @@ async function updateWeatherTiles() {
 
   if (temp) temp.innerText = Math.round(weather.temperature_2m) + "°C";
   if (uv) uv.innerText = weather.uv_index;
-  if (wx) wx.innerText = weatherCodeToText(weather.weather_code);
+  if (wx) wx.innerText = weatherCodeToEmoji(weather.weather_code);
 }
 
 // ===============================
