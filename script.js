@@ -2,6 +2,7 @@ let currentPM = "pm25";
 
 let mapInstance = null;
 let dotLayer = null;
+let heatLayer = null;
 
 // ===============================
 // PARTICLES
@@ -75,18 +76,20 @@ function initMap() {
 }
 
 // ===============================
-// RENDER DATA (SAFE)
+// FIREBASE
 // ===============================
-
 const db = firebase.database();
 
 let liveData = [];
+let firebaseListening = false;
 
 function getData() {
 
+  if (firebaseListening) return;
+  firebaseListening = true;
+
   const sensorRef = db.ref("sensorData");
 
-  // listen for new entries
   sensorRef.on("child_added", (snapshot) => {
 
     const d = snapshot.val();
@@ -106,6 +109,9 @@ function getData() {
   });
 }
 
+// ===============================
+// RENDER DATA
+// ===============================
 function renderData(data) {
 
   if (!mapInstance || !dotLayer || !heatLayer) return;
@@ -116,23 +122,14 @@ function renderData(data) {
 
   data.forEach((p, i) => {
 
-    // ===============================
-    // VALUE FUNCTION (make sure you have this)
-    // ===============================
-    const v = getValue(p); // e.g. AQI or pm25-based score
+    const v = getValue(p);
 
-    // ===============================
-    // COLOR SCALE
-    // ===============================
     let color =
       v < 20 ? "#2ecc71" :
       v < 50 ? "#f1c40f" :
       v < 80 ? "#e67e22" :
                "#e74c3c";
 
-    // ===============================
-    // FIND MAX DISTANCE
-    // ===============================
     let maxDist = 0;
 
     for (let j = 0; j < data.length; j++) {
@@ -151,9 +148,6 @@ function renderData(data) {
 
     const auraRadius = maxDist * 1.1;
 
-    // ===============================
-    // AURA CIRCLE
-    // ===============================
     L.circle([p.lat, p.lon], {
       radius: auraRadius,
       stroke: false,
@@ -162,9 +156,6 @@ function renderData(data) {
       className: "soft-aura"
     }).addTo(heatLayer);
 
-    // ===============================
-    // MAIN DOT
-    // ===============================
     const time = new Date(p.timestamp).toLocaleString();
 
     L.circleMarker([p.lat, p.lon], {
@@ -185,6 +176,10 @@ function renderData(data) {
 
   });
 }
+
+// ===============================
+// CLEAN OLD DATA (24 HOURS)
+// ===============================
 function cleanOldData() {
   const now = Date.now();
   const DAY = 24 * 60 * 60 * 1000;
@@ -193,8 +188,9 @@ function cleanOldData() {
     return (now - p.timestamp) <= DAY;
   });
 }
+
 // ===============================
-// PM TOGGLE (SAFE)
+// PM TOGGLE
 // ===============================
 function setPM(type) {
   currentPM = type;
@@ -207,7 +203,7 @@ function setPM(type) {
 }
 
 // ===============================
-// WEATHER (SAFE)
+// WEATHER
 // ===============================
 async function fetchWeather(lat, lon) {
   try {
@@ -225,23 +221,23 @@ async function fetchWeather(lat, lon) {
 
 function weatherCodeToEmoji(code) {
   const map = {
-    0: "☀️",        // Clear
-    1: "🌤️",        // Mostly Clear
-    2: "⛅",        // Partly Cloudy
-    3: "☁️",        // Cloudy
-    45: "🌫️",       // Fog
-    51: "🌦️",       // Drizzle
-    61: "🌧️",       // Rain
-    71: "❄️",       // Snow
-    80: "🌧️",       // Showers
-    95: "⛈️"        // Storm
+    0: "☀️",
+    1: "🌤️",
+    2: "⛅",
+    3: "☁️",
+    45: "🌫️",
+    51: "🌦️",
+    61: "🌧️",
+    71: "❄️",
+    80: "🌧️",
+    95: "⛈️"
   };
 
   return map[code] || "❓";
 }
 
 // ===============================
-// TILE UPDATE (SAFE)
+// WEATHER TILES
 // ===============================
 async function updateWeatherTiles() {
   const center = mapInstance?.getCenter();
@@ -270,10 +266,9 @@ window.onload = function () {
     getData();
     updateWeatherTiles();
 
-    // 🔥 ADD THIS HERE
+    // ONLY cleanup interval (no redundant render)
     setInterval(() => {
       cleanOldData();
-      renderData(liveData);
     }, 60 * 1000);
   }
 };
