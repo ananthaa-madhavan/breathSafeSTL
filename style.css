@@ -288,6 +288,28 @@ p {
   margin-top: 6px;
 }
 
+#pointCounter {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+
+  background: rgba(20, 20, 20, 0.75);
+  color: white;
+
+  padding: 10px 14px;
+
+  border-radius: 12px;
+
+  font-family: "Segoe UI", sans-serif;
+  font-size: 14px;
+
+  z-index: 9999;
+
+  backdrop-filter: blur(6px);
+
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+
 /* =======================
    HEAT DOTS
 ======================= */
@@ -301,6 +323,7 @@ p {
   filter: blur(18px);
   opacity: 0.35;
 }
+
 
 .heat-green { background: #2ecc71; }
 .heat-yellow { background: #f1c40f; }
