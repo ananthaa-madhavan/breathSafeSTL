@@ -4,30 +4,63 @@
   <title>Analytics - BreathSafeSTL</title>
   <link rel="stylesheet" href="style.css">
 </head>
-  
-<script src="script.js"></script>
+
 <body>
 
   <!-- TOP BANNER -->
   <div class="top-banner">BreathSafeSTL</div>
 
   <!-- NAV BAR -->
- <div class="navbar">
+  <div class="navbar">
     <a href="index.html">Home</a>
-      <a href="analytics.html">Analytics</a>
+    <a href="analytics.html">Analytics</a>
     <a href="about.html">About</a>
     <a href="design.html">Info</a>
     <a href="contact.html">Contact</a>
   </div>
+
   <!-- PAGE CONTENT -->
   <div class="container">
 
     <h1>Analytics</h1>
 
+    <div class="analytics-grid">
 
+      <div class="stat-card">
+        <h3>Total Readings</h3>
+        <div id="totalReadings" class="stat-number">487</div>
+      </div>
 
+      <div class="stat-card">
+        <h3>Days Monitored</h3>
+        <div id="daysMonitored" class="stat-number">83</div>
+      </div>
+
+      <div class="stat-card">
+        <h3>Current Active Points</h3>
+        <div id="activePoints" class="stat-number">4</div>
+      </div>
+
+      <div class="stat-card">
+        <h3>Average PM2.5</h3>
+        <div id="avgPM25" class="stat-number">8.7</div>
+      </div>
+
+      <div class="stat-card">
+        <h3>Best PM2.5 Recorded</h3>
+        <div id="bestReading" class="stat-number">4.2</div>
+      </div>
+
+      <div class="stat-card">
+        <h3>Worst PM2.5 Recorded</h3>
+        <div id="worstReading" class="stat-number">38.7</div>
+      </div>
+
+    </div>
 
   </div>
+
+  <script src="script.js"></script>
 
 </body>
 </html>
