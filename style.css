@@ -323,7 +323,65 @@ p {
   filter: blur(18px);
   opacity: 0.35;
 }
+/* =======================
+   ANALYTICS PAGE
+======================= */
 
+.analytics-grid {
+  width: 95%;
+  max-width: 1300px;
+
+  margin: 40px auto;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
+}
+
+.stat-card {
+  background: #0f2747;
+
+  height: 260px;
+
+  border-radius: 20px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  color: white;
+
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+
+  transition: transform 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+}
+
+.stat-card h3 {
+  margin: 0 0 20px 0;
+
+  font-size: 1.5rem;
+  font-weight: 600;
+
+  text-align: center;
+}
+
+.stat-number {
+  font-size: 3.2rem;
+  font-weight: 700;
+}
+
+@media (max-width: 800px) {
+
+  .analytics-grid {
+    grid-template-columns: 1fr;
+  }
+
+}
 
 .heat-green { background: #2ecc71; }
 .heat-yellow { background: #f1c40f; }
