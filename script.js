@@ -97,8 +97,7 @@ function getData() {
   sensorRef.on("child_added", (snapshot) => {
 
     const d = snapshot.val();
-
-    const point = {
+const point = {
   lat: d.Latitude,
   lon: d.Longitude,
   pm1: d.PM10,
@@ -107,12 +106,32 @@ function getData() {
   timestamp: new Date(d.DateTime).getTime()
 };
 
+const DAY = 24 * 60 * 60 * 1000;
+const THREE_MILES = 4828;
+
+// Ignore old points immediately
+if ((Date.now() - point.timestamp) > DAY) {
+  return;
+}
+
+// Remove points within 3 miles
+liveData = liveData.filter(existing => {
+
+  const dist = mapInstance.distance(
+    [point.lat, point.lon],
+    [existing.lat, existing.lon]
+  );
+
+  return dist >= THREE_MILES;
+});
+
 liveData.push(point);
+
 updatePointCounter();
-    // ✅ FIX: prevent render before map is ready
-    if (mapReady) {
-      renderData(liveData);
-    }
+
+if (mapReady) {
+  renderData(liveData);
+}
   });
 }
 
