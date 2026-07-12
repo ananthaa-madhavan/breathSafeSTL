@@ -255,15 +255,11 @@ function setPM(type) {
   renderData(liveData);
 }
 
-// ===============================
-// WEATHER
-// ===============================
 async function fetchWeather(lat, lon) {
   try {
     const res = await fetch(
       `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,uv_index,weather_code&timezone=auto`
     );
-
     const data = await res.json();
     return data.current;
   } catch (e) {
@@ -272,40 +268,40 @@ async function fetchWeather(lat, lon) {
   }
 }
 
-function weatherCodeToEmoji(code) {
-  const map = {
-    0: "☀️",
-    1: "🌤️",
-    2: "⛅",
-    3: "☁️",
-    45: "🌫️",
-    51: "🌦️",
-    61: "🌧️",
-    71: "❄️",
-    80: "🌧️",
-    95: "⛈️"
-  };
-
-  return map[code] || "❓";
+async function fetchAQI(lat, lon) {
+  try {
+    const res = await fetch(
+      `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lon}&current=us_aqi`
+    );
+    const data = await res.json();
+    return data.current?.us_aqi ?? null;
+  } catch (e) {
+    console.log("AQI fetch failed", e);
+    return null;
+  }
 }
 
-// ===============================
-// WEATHER TILES
-// ===============================
 async function updateWeatherTiles() {
   const center = mapInstance?.getCenter();
   if (!center) return;
 
-  const weather = await fetchWeather(center.lat, center.lng);
-  if (!weather) return;
+  const [weather, aqi] = await Promise.all([
+    fetchWeather(center.lat, center.lng),
+    fetchAQI(center.lat, center.lng)
+  ]);
 
   const temp = document.getElementById("tempTile");
   const uv = document.getElementById("uvTile");
   const wx = document.getElementById("weatherTile");
+  const aq = document.getElementById("aqTile");
 
-  if (temp) temp.innerText = Math.round(weather.temperature_2m) + "°C";
-  if (uv) uv.innerText = weather.uv_index;
-  if (wx) wx.innerText = weatherCodeToEmoji(weather.weather_code);
+  if (weather) {
+    if (temp) temp.innerText = Math.round(weather.temperature_2m) + "°C";
+    if (uv) uv.innerText = weather.uv_index;
+    if (wx) wx.innerText = weatherCodeToEmoji(weather.weather_code);
+  }
+
+  if (aq) aq.innerText = aqi !== null ? aqi : "--";
 }
 
 // ===============================
