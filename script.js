@@ -394,7 +394,8 @@ function initAnalytics() {
     setText("currentBest", currentBest !== null ? currentBest.toFixed(1) : "--");
     setText("currentWorst", currentWorst !== null ? currentWorst.toFixed(1) : "--");
 
-    setText("totalReadings", all.length);
+    // Show the raw total number of readings stored in Firebase
+    setText("totalReadings", snapshot.numChildren());
     setText("daysMonitored", daysMonitored);
     setText("historicalAvg", historicalAvg.toFixed(1));
     setText("historicalBest", historicalBest.toFixed(1));
